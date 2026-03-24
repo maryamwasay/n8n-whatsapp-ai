@@ -1,0 +1,168 @@
+{
+  "name": "My workflow 9",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        -224
+      ],
+      "id": "581f3e80-c2ae-4dbc-8dce-5725aaa12b70",
+      "name": "WhatsApp Trigger",
+      "webhookId": "7e624fe4-c019-4ef2-aac4-d05e6c86b480",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "oFIckTy4p1UVg03b",
+          "name": "WhatsApp OAuth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "1098768993309399",
+        "recipientPhoneNumber": "+92 333 4391489",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -64,
+        -224
+      ],
+      "id": "0175284a-33e0-450c-bae5-595b394a093e",
+      "name": "Send message",
+      "webhookId": "613a3c2d-554d-4df8-985b-a7e8a097e1cc",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "JpYPm3pTrXTrZPlQ",
+          "name": "WhatsApp account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messages[0].text.body }}",
+        "options": {
+          "systemMessage": "You are a friendly, helpful companion. You always respond in a cheerful and casual way, as if you were the user’s friend. Use friendly emojis if appropriate and keep the conversation warm and supportive.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -512,
+        -224
+      ],
+      "id": "0640a2da-b2ad-4ee8-9f71-e2ad7f27a8eb",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.messages[0].text.body }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -512,
+        -16
+      ],
+      "id": "ced87edb-8b6b-4e64-9bc0-93d01f6f769a",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -656,
+        -16
+      ],
+      "id": "ea0c64a0-5d5f-44be-98ca-ee2cdf1412b5",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "JPaqDKVqwuEDi6gj",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "782bddd7-3068-4994-9e42-7698e1778574",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9d06a9ac7c999c01800cb50f51def09a18d0664390bf51eb465390508fda5545"
+  },
+  "id": "O5cNBFx3pOBbo7l1",
+  "tags": []
+}
